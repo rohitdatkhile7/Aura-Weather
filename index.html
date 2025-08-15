@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -14,7 +15,7 @@
             --glass-hover: rgba(255, 255, 255, 0.15);
             --primary-gradient: linear-gradient(to right, #8a2be2, #4169e1);
         }
-        
+
         body {
             font-family: 'Inter', sans-serif;
             color: white;
@@ -41,7 +42,7 @@
             border: 1px solid var(--glass-border);
             transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
-        
+
         .glass-container:hover {
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
         }
@@ -54,7 +55,7 @@
             border: 1px solid var(--glass-border);
             transition: transform 0.3s ease;
         }
-        
+
         .glass-item:hover {
             transform: translateY(-5px);
             background: var(--glass-hover);
@@ -77,68 +78,102 @@
             background: rgba(255, 255, 255, 0.4);
             border-radius: 10px;
         }
-        
+
         .hourly-forecast-container::-webkit-scrollbar-track {
             background: rgba(0, 0, 0, 0.1);
             border-radius: 10px;
         }
-        
+
         .weather-icon {
             filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.3));
             transition: transform 0.5s ease;
         }
-        
+
         .weather-icon:hover {
             transform: scale(1.1) rotate(5deg);
         }
-        
+
         .gradient-btn {
             background: var(--primary-gradient);
             transition: all 0.3s ease;
         }
-        
+
         .gradient-btn:hover {
             transform: translateY(-2px);
             box-shadow: 0 5px 15px rgba(138, 43, 226, 0.4);
         }
-        
+
         .search-input {
             transition: all 0.3s ease;
         }
-        
+
         .search-input:focus {
             box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.2);
         }
-        
+
         @keyframes pulse {
-            0% { opacity: 0.8; transform: scale(1); }
-            50% { opacity: 1; transform: scale(1.05); }
-            100% { opacity: 0.8; transform: scale(1); }
+            0% {
+                opacity: 0.8;
+                transform: scale(1);
+            }
+
+            50% {
+                opacity: 1;
+                transform: scale(1.05);
+            }
+
+            100% {
+                opacity: 0.8;
+                transform: scale(1);
+            }
         }
-        
+
         .pulse-animation {
             animation: pulse 2s infinite ease-in-out;
         }
-        
+
         #vibe-modal {
             transition: all 0.3s ease;
         }
-        
+
         .fade-in {
             animation: fadeIn 0.5s ease-in-out;
         }
-        
+
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        /* Mobile search styles */
+        #mobile-search.active {
+            max-height: 70px;
+            opacity: 1;
+        }
+
+        #search-toggle {
+            transition: all 0.3s ease;
+        }
+
+        #search-toggle.active {
+            color: #FFD700;
+            transform: rotate(90deg);
         }
     </style>
 </head>
+
 <body class="bg-gray-900">
     <video autoplay muted loop id="background-video">
     </video>
 
-    <nav id="navbar" class="fixed top-0 left-0 right-0 z-50 px-4 py-3 mb-6 backdrop-blur-xl bg-black/10 transition-all duration-300 transform">
+    <nav id="navbar"
+        class="fixed top-0 left-0 right-0 z-50 px-4 py-3 mb-6 backdrop-blur-xl bg-black/10 transition-all duration-300 transform">
         <div class="max-w-6xl mx-auto flex flex-wrap justify-between items-center gap-2">
             <a href="#" class="flex items-center space-x-3 py-1">
                 <svg class="w-8 h-8 md:w-10 md:h-10" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
@@ -148,15 +183,39 @@
                             <stop offset="100%" style="stop-color:#FFA500;stop-opacity:1" />
                         </linearGradient>
                     </defs>
-                    <circle cx="50" cy="50" r="30" fill="url(#sunGradient)"/>
-                    <path d="M 60,70 A 25,25 0 1,1 90,45 A 15,15 0 1,1 60,70" fill="rgba(255,255,255,0.8)"/>
+                    <circle cx="50" cy="50" r="30" fill="url(#sunGradient)" />
+                    <path d="M 60,70 A 25,25 0 1,1 90,45 A 15,15 0 1,1 60,70" fill="rgba(255,255,255,0.8)" />
                 </svg>
                 <span class="text-xl md:text-2xl font-bold tracking-tight">AuraWeather</span>
             </a>
-            <form id="search-form" class="flex-1 flex justify-end max-w-xs sm:max-w-sm ml-auto mr-0 mt-1 sm:mt-0">
+
+            <!-- Search icon for mobile -->
+            <button id="search-toggle" class="md:hidden p-2 text-white hover:text-yellow-300 transition-colors">
+                <i class="fas fa-search text-xl"></i>
+            </button>
+
+            <!-- Search form - hidden on mobile by default -->
+            <form id="search-form"
+                class="flex-1 hidden md:flex justify-end max-w-xs sm:max-w-sm ml-auto mr-0 mt-1 sm:mt-0">
                 <div class="relative w-full flex items-center">
-                    <input id="search-input" class="search-input w-full bg-white/25 text-white placeholder-white/70 rounded-l-full py-2 pl-4 pr-8 focus:outline-none focus:bg-white/30 transition-all" type="search" placeholder="Search city...">
-                    <button type="submit" class="bg-white/35 hover:bg-white/45 rounded-r-full px-4 py-2 font-semibold transition-colors">Search</button>
+                    <input id="search-input"
+                        class="search-input w-full bg-white/25 text-white placeholder-white/70 rounded-l-full py-2 pl-4 pr-8 focus:outline-none focus:bg-white/30 transition-all"
+                        type="search" placeholder="Search city...">
+                    <button type="submit"
+                        class="bg-white/35 hover:bg-white/45 rounded-r-full px-4 py-2 font-semibold transition-colors">Search</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Mobile search dropdown - hidden by default -->
+        <div id="mobile-search" class="md:hidden overflow-hidden transition-all duration-300 max-h-0 opacity-0">
+            <form id="mobile-search-form" class="px-2 py-3">
+                <div class="flex items-center">
+                    <input id="mobile-search-input"
+                        class="search-input w-full bg-white/25 text-white placeholder-white/70 rounded-l-full py-2 pl-4 focus:outline-none focus:bg-white/30 transition-all"
+                        type="search" placeholder="Search city...">
+                    <button type="submit"
+                        class="bg-white/35 hover:bg-white/45 rounded-r-full px-4 py-2 font-semibold transition-colors">Search</button>
                 </div>
             </form>
         </div>
@@ -166,10 +225,11 @@
     <div class="h-16 md:h-20"></div>
 
     <!-- Main Content -->
-    <main class="px-4 pb-8">
+    <main class="my-2 md:my-0 px-4 pb-8">
+
 
         <div id="error-message" class="max-w-6xl mx-auto bg-red-500/70 text-center p-3 rounded-lg mb-6 hidden"></div>
-        
+
         <!-- Current Weather Card -->
         <div class="glass-container max-w-6xl mx-auto p-6 md:p-8 mb-6 fade-in">
             <div class="flex flex-col lg:flex-row items-center justify-between gap-8">
@@ -178,14 +238,17 @@
                     <h1 id="location" class="text-4xl font-bold mb-2">Loading...</h1>
                     <p id="current-condition" class="text-xl text-white/80 mb-4">--</p>
                     <div class="flex flex-wrap justify-center lg:justify-start gap-3 mt-4">
-                        <span class="glass-item px-3 py-1 text-sm"><i class="fas fa-calendar-day mr-2"></i><span id="current-date">--</span></span>
-                        <span class="glass-item px-3 py-1 text-sm"><i class="fas fa-clock mr-2"></i><span id="current-time">--</span></span>
+                        <span class="glass-item px-3 py-1 text-sm"><i class="fas fa-calendar-day mr-2"></i><span
+                                id="current-date">--</span></span>
+                        <span class="glass-item px-3 py-1 text-sm"><i class="fas fa-clock mr-2"></i><span
+                                id="current-time">--</span></span>
                     </div>
                 </div>
-                
+
                 <!-- Temperature & Icon -->
                 <div class="flex items-center gap-4">
-                    <img id="current-weather-icon" src="https://placehold.co/100x100/ffffff/ffffff?text=NA" alt="Weather icon" class="weather-icon w-24 h-24">
+                    <img id="current-weather-icon" src="https://placehold.co/100x100/ffffff/ffffff?text=NA"
+                        alt="Weather icon" class="weather-icon w-24 h-24">
                     <div class="text-center">
                         <p class="text-7xl font-bold"><span id="current-temp">--</span>°</p>
                         <p class="text-sm text-white/70">Feels like <span id="feels-like">--</span>°</p>
@@ -243,7 +306,7 @@
             </h3>
             <div id="forecast" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4 text-center"></div>
         </div>
-        
+
         <!-- AI Vibe Section -->
         <div class="glass-container max-w-6xl mx-auto p-6 md:p-8 text-center fade-in">
             <h3 class="text-xl font-semibold mb-4 flex items-center justify-center">
@@ -253,10 +316,11 @@
             <button id="vibe-check-btn" class="gradient-btn text-white font-bold py-3 px-6 rounded-full">
                 ✨ Get Today's Vibe
             </button>
-            
+
             <div id="vibe-recommendations" class="mt-6 glass-item p-6 text-left hidden">
                 <div id="gemini-spinner" class="text-center">
-                    <div class="inline-block h-12 w-12 animate-spin rounded-full border-4 border-solid border-purple-300 border-r-transparent">
+                    <div
+                        class="inline-block h-12 w-12 animate-spin rounded-full border-4 border-solid border-purple-300 border-r-transparent">
                         <span class="sr-only">Loading...</span>
                     </div>
                     <p class="mt-4 text-lg">Crafting your vibe...</p>
@@ -281,51 +345,88 @@
             document.getElementById('current-date').textContent = now.toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric' });
             document.getElementById('current-time').textContent = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
         }
-        
+
         // Update time every minute
         updateDateTime();
         setInterval(updateDateTime, 60000);
-        
+
         // Show/hide vibe recommendations
-        document.getElementById('vibe-check-btn').addEventListener('click', function() {
+        document.getElementById('vibe-check-btn').addEventListener('click', function () {
             const vibeBox = document.getElementById('vibe-recommendations');
             vibeBox.classList.remove('hidden');
             vibeBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
         });
         let lastScrollY = 0;
-const navbar = document.getElementById('navbar');
+        const navbar = document.getElementById('navbar');
 
-// Optimize video loading
-const backgroundVideo = document.getElementById('background-video');
-if (backgroundVideo) {
-    backgroundVideo.setAttribute('loading', 'lazy');
-    backgroundVideo.setAttribute('preload', 'auto');
-}
+        // Optimize video loading
+        const backgroundVideo = document.getElementById('background-video');
+        if (backgroundVideo) {
+            backgroundVideo.setAttribute('loading', 'lazy');
+            backgroundVideo.setAttribute('preload', 'auto');
+        }
 
-// Navbar scroll behavior
-window.addEventListener('scroll', function() {
-    const currentScrollY = window.scrollY;
-    
-    // Show/hide navbar on scroll
-    if (currentScrollY > lastScrollY) {
-        // Scrolling down - hide navbar
-        navbar.classList.add('-translate-y-full');
-    } else {
-        // Scrolling up - show navbar
-        navbar.classList.remove('-translate-y-full');
-    }
-    
-    // Add shadow when scrolled
-    if (currentScrollY > 10) {
-        navbar.classList.add('shadow-lg');
-    } else {
-        navbar.classList.remove('shadow-lg');
-    }
-    
-    lastScrollY = currentScrollY;
-});
+        // Navbar scroll behavior
+        window.addEventListener('scroll', function () {
+            const currentScrollY = window.scrollY;
+
+            // Show/hide navbar on scroll
+            if (currentScrollY > lastScrollY) {
+                // Scrolling down - hide navbar
+                navbar.classList.add('-translate-y-full');
+            } else {
+                // Scrolling up - show navbar
+                navbar.classList.remove('-translate-y-full');
+            }
+
+            // Add shadow when scrolled
+            if (currentScrollY > 10) {
+                navbar.classList.add('shadow-lg');
+            } else {
+                navbar.classList.remove('shadow-lg');
+            }
+
+            lastScrollY = currentScrollY;
+        });
     </script>
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-    <script src="/script.js"></script>
+    <script src="script.js"></script>
+    <script>
+        // Mobile search toggle functionality
+        const searchToggle = document.getElementById('search-toggle');
+        const mobileSearch = document.getElementById('mobile-search');
+        const mobileSearchForm = document.getElementById('mobile-search-form');
+        const mobileSearchInput = document.getElementById('mobile-search-input');
+
+        searchToggle.addEventListener('click', function () {
+            mobileSearch.classList.toggle('active');
+            searchToggle.classList.toggle('active');
+
+            // Focus the input when opened
+            if (mobileSearch.classList.contains('active')) {
+                setTimeout(() => mobileSearchInput.focus(), 300);
+            }
+        });
+
+        // Handle mobile search form submission
+        mobileSearchForm.addEventListener('submit', async (ev) => {
+            ev.preventDefault();
+            const input = mobileSearchInput.value.trim();
+            if (!input) return;
+
+            // Close the mobile search after submission
+            mobileSearch.classList.remove('active');
+            searchToggle.classList.remove('active');
+
+            // Call the same search function that the main form uses
+            const searchEvent = new Event('submit');
+            document.getElementById('search-input').value = input;
+            document.getElementById('search-form').dispatchEvent(searchEvent);
+
+            // Clear the mobile input
+            mobileSearchInput.value = '';
+        });
+    </script>
 </body>
+
 </html>
