@@ -258,8 +258,7 @@ Format strictly in **clean Markdown**, using headings, tables, bullets & emojis.
 `;
 
 
-    // ⚠️ REPLACE WITH YOUR GEMINI API KEY ⚠️
-    const API_KEY = "AIzaSyDrxRthxsgYZKtGOfOpVsaEOWvpASrPZfY"; 
+    const API_KEY = "AIzaSyBg13y6IUrGDbNAnQsKbIcaWes_1T2KqWA"; 
     
     // Using Gemini 2.5 Flash model for optimal performance
     const model = "gemini-2.5-flash"; 
