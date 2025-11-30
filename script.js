@@ -84,6 +84,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     try {
       const res = await fetch(apiURL);
+      console.log("AI res: ", res);
       if (!res.ok) throw new Error("Weather API error");
       const data = await res.json();
 
@@ -200,10 +201,14 @@ Act as a cool and trendy lifestyle + travel + food assistant. Provide the follow
 
 Make the entire response well-structured in markdown with clear headings, tables, and bullet points.
 `;
+    // Inside vibeBtn event listener...
+
+    const API_KEY = "AIzaSyDrxRthxsgYZKtGOfOpVsaEOWvpASrPZfY"; // ⚠️ See security note below
+    const model = "gemini-2.5-flash"; // CHANGED to a valid model
 
     try {
       const resp = await fetch(
-        "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=AIzaSyCtLW2_XrTqCjR8R8EWwpl7AElT8Zb4o6A",
+        `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${API_KEY}`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -212,10 +217,10 @@ Make the entire response well-structured in markdown with clear headings, tables
           }),
         }
       );
+      console.log(resp)
 
       const result = await resp.json();
       let output = result.candidates?.[0]?.content?.parts?.[0]?.text;
-      console.log(output);
 
       if (output) {
         // Convert markdown → HTML
